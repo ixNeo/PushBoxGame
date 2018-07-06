@@ -1,7 +1,8 @@
 #include <iostream>
-#include "Level.h"
-#include "SelectColor.h"
+#include <conio.h>
+#include <windows.h>
 using namespace std;
+#include "Level.h"
 
 const int SPACE_OUT = 0;
 const int WALL = 1;
@@ -12,15 +13,22 @@ const int TARGET_IN = 5;
 const int PERSON = 6;
 
 
+void  SelectColor(int iColor)                  //颜色函数
+{
+	HANDLE  hConsole =
+		GetStdHandle((STD_OUTPUT_HANDLE));//得到控制台输出设备的句柄
+	SetConsoleTextAttribute(hConsole, iColor);//设置控制台设备的属性
+}
 
-
-Level::Level(int id, int valueMap[][16]) {
-	this->id = id;
+Level Level::operator = (Level a) {
+	this->id = a.id;
 	boxSum = 0;
 	findBoxSum = 0;
-	valueMap = valueMap;
+
 	for (int i = 0; i < 14; i++) {
 		for (int j = 0; j < 16; j++) {
+			this->valueMap[i][j] = a.valueMap[i][j];
+			this->valueMap2[i][j] = a.valueMap2[i][j];
 			switch (valueMap[i][j]) {
 			case 0:
 				map[i][j] = &spaceOut; break;
@@ -40,9 +48,42 @@ Level::Level(int id, int valueMap[][16]) {
 			}
 		}
 	}
+	return *this;
 }
 
-void Level::synMap() {
+Level::Level(int id, int valueMap[14][16]) {
+	this->id = id;
+	boxSum = 0;
+	findBoxSum = 0;
+	
+	for (int i = 0; i < 14; i++) {
+		for (int j = 0; j < 16; j++) {
+			this->valueMap[i][j] = valueMap[i][j];
+			this->valueMap2[i][j] = valueMap[i][j];
+			switch (valueMap[i][j]) {
+			case 0:
+				map[i][j] = &spaceOut; break;
+			case 1:
+				map[i][j] = &wall; break;
+			case 2:
+				map[i][j] = &space; break;
+			case 3:
+				map[i][j] = &target; break;
+			case 4:
+				map[i][j] = &box; break;
+			case 5:
+				map[i][j] = &targetIn; break;
+			case 6:
+				map[i][j] = &person; break;
+			default:break;
+			}
+		}
+	}
+	//getchar();
+}
+
+void Level::synMap()
+{
 	for (int i = 0; i < 14; i++) {
 		for (int j = 0; j < 16; j++) {
 			switch (valueMap[i][j]) {
@@ -66,9 +107,9 @@ void Level::synMap() {
 	}
 }
 int Level::getBoxSum() {
+	boxSum = 0;
 	for (int i = 0; i<14; i++)
 		for (int j = 0; j<16; j++) {
-			//valueMap[i][j] = valueMap[i][j];
 			if (map[i][j] == &target || map[i][j] == &targetIn) /*记录箱子个数*/
 				boxSum++;		
 		}
@@ -76,9 +117,9 @@ int Level::getBoxSum() {
 }
 
 int Level::getFindBoxSum() {
+	findBoxSum = 0;
 	for (int i = 0; i<14; i++)
 		for (int j = 0; j<16; j++) {
-			//valueMap[i][j] = valueMap[i][j];
 			if (map[i][j] == &targetIn)
 				findBoxSum++;			
 		}
@@ -99,41 +140,12 @@ void Level::printMap() {
 		for (j = 0; j<16; j++)
 		{
 			map[i][j]->printElement();
-			//switch (aiMap[i][j])
-			//{
-			//case 0:                /*空地*/
-			//	printf("  ");
-			//	break;
-			//case 1:
-			//	SelectColor(14);    /*墙*/
-			//	printf("▓");
-			//	break;
-			//case 2:                /*内部空地*/
-			//	printf("  ");
-			//	break;
-			//case 3:
-			//	SelectColor(11);    /*目的地*/
-			//	printf("○");
-			//	break;
-			//case 4:                /*箱子*/
-			//	SelectColor(11);
-			//	printf("●");
-			//	break;
-			//case 5:                /*箱子推到目的地后显示*/
-			//	SelectColor(9);
-			//	printf("☆");
-			//	break;
-			//case 6:                /*小人*/
-			//	SelectColor(10);
-			//	printf("♀");
-			//	break;
-			//}
 		}
 		cout << endl;
 	}
 	SelectColor(14);
 	cout << endl;
-	cout << "\tYou are in Level " << getId() << "!\t\t" << endl;
+	cout << "\tYou are in Level " << getId()+1 << "!\t\t" << endl;
 	cout << "\tPress arrow keys to play the game!\t" << endl;
 	cout << "\tpress N to the next level!\t" << endl;
 	cout << "\tpress Q to return the home page!\t" << endl;
@@ -149,17 +161,6 @@ void Level::setPersonPos() {
 	}
 }
 
-
-int ** Level::cloneValueMap() {
-	int **copy;
-	for (int i = 0; i < 14; i++) {
-		copy[i] = new int[16];
-		for (int j = 0; j < 16; j++)
-			copy[i][j] = valueMap[i][j];
-	}
-		
-	return copy;
-}
 
 void Level::moveBox(int iSelect) {
 	int iPlayerX1, iPlayerY1;        /*小人下一个要走的位置坐标*/
@@ -196,7 +197,6 @@ void Level::moveBox(int iSelect) {
 	default:
 		break;
 	}
-	int **valueMap2 = cloneValueMap();
 	/*对地图的操作*/
 	switch (valueMap[iPlayerX1][iPlayerY1])/*判断小人下一步要走的位置*/
 	{
@@ -235,11 +235,7 @@ void Level::moveBox(int iSelect) {
 			valueMap[iPlayerX][iPlayerY] = SPACE;
 		break;
 	}
-
 	synMap();
-	for (int i = 0; i < 14; i++) {
-		delete[] valueMap2[i];
-	}
 }
 
 

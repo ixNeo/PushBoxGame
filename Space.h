@@ -1,10 +1,14 @@
 #pragma once
-#include <string>
+//#include <string>
+using namespace std;
+//#include "SelectColor.h"
+extern void  SelectColor(int iColor);
+class Element;
 class Space :public Element {
 //private:
 //	string name;
 public:
-	Space() :Element("space") {}
+	Space() :Element(string("space")) {}
 
 	void printElement() {
 		printf("  ");

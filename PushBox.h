@@ -1,10 +1,12 @@
 #pragma once
+using namespace std;
 #include "Level.h"
 class PushBox {
-private:
-	Level level[4];
+public:
+	Level level[4]; // 四个关卡对象
 
 public:	
+	// 四个数据地图
 	int aiMap1[14][16] = {
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -74,7 +76,7 @@ public:
 	};
 
 	PushBox();
-
+	void initMap();
 	int welcomePage();
 	void designUI();
 	void play(int id);

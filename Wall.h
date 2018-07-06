@@ -1,12 +1,13 @@
 #pragma once
-#include "Element.h"
 #include <string>
+using namespace std;
+#include "Element.h"
+extern void  SelectColor(int iColor);
 
+class Element;
 class Wall :public Element {
-//private:
-//	string name;
 public:
-	Wall() :Element("wall") {}
+	Wall() :Element(string("wall")) {}
 
 	void printElement() {
 		SelectColor(14);    /*ǽ*/

@@ -1,10 +1,12 @@
 #pragma once
+using namespace std;
 #include "Element.h"
+
+extern void  SelectColor(int iColor);
+class Element;
 class Box :public Element {
-//private:
-//	string name;
 public:
-	Box() :Element("box") {}
+	Box() :Element(string("box")) {}
 
 	void printElement() {
 		SelectColor(11);
